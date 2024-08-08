@@ -1,4 +1,4 @@
-// Copyright © 2023 Tim Shadel. All rights reserved.
+// Copyright © 2024 Tim Shadel. All rights reserved.
 
 import Foundation
 import XCTest
@@ -10,5 +10,5 @@ public protocol TestPage {
 
 
 public extension TestPage {
-    var app: XCUIApplication { XCUIApplication.sharedInstance }
+    var app: XCUIApplication { XCUIApplication() }
 }

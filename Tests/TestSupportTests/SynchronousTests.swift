@@ -50,7 +50,7 @@ final class TestSupportTests: XCTestCase {
 
     func testEquals() throws {
         expect(5, equals: 5)
-        expect(noun: "messages", 5, equals: 5)
+        expect(subject: "messages", 5, equals: 5)
         expect(5, doesNotEqual: 4)
         expect(5, doesNotEqual: nil)
     }

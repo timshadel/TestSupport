@@ -1,4 +1,4 @@
-// Copyright © 2023 Tim Shadel. All rights reserved.
+// Copyright © 2024 Tim Shadel. All rights reserved.
 
 import Foundation
 import XCTest
@@ -6,6 +6,7 @@ import XCTest
 public extension XCTestCase {
     // MARK: - Throws
     func shouldNotThrow(
+        subject: String = "Block",
         file: String = #file,
         line: Int = #line,
         _ block: () throws -> Void
@@ -14,7 +15,7 @@ public extension XCTestCase {
             _ = try block()
         } catch {
             recordFailure(
-                description: "Boo! \(error)",
+                description: "\(subject) threw \(error)",
                 inFile: file,
                 atLine: Int(line),
                 type: .thrownError
@@ -23,6 +24,7 @@ public extension XCTestCase {
     }
 
     func shouldThrow(
+        subject: String = "Block",
         file: String = #file,
         line: Int = #line,
         _ block: () throws -> Void
@@ -30,7 +32,7 @@ public extension XCTestCase {
         do {
             _ = try block()
             recordFailure(
-                description: "Should have thrown!",
+                description: "\(subject) should have thrown!",
                 inFile: file,
                 atLine: Int(line),
                 type: .unmatchedExpectedFailure
@@ -50,13 +52,14 @@ public extension XCTestCase {
 
     // MARK: - Equals
     func expect(
+        subject: String = "this",
         nil expression: @autoclosure () -> Any?,
         file: String = #file,
         line: Int = #line
     ) {
         if let this = expression() {
             recordFailure(
-                description: "Expected '\(this)' to be nil.",
+                description: "Expected \(subject) '\(this)' to be nil.",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -65,13 +68,14 @@ public extension XCTestCase {
     }
 
     func expect(
+        subject: String = "this",
         notNil expression: @autoclosure () -> Any?,
         file: String = #file,
         line: Int = #line
     ) {
         if expression() == nil {
             recordFailure(
-                description: "Expected this not to be nil.",
+                description: "Expected \(subject) not to be nil.",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -89,6 +93,7 @@ public extension XCTestCase {
     }
 
     func expect(
+        subject: String = "element",
         exists element: XCUIElement,
         file: String = #file,
         line: Int = #line
@@ -96,7 +101,7 @@ public extension XCTestCase {
         if !element.exists {
             print(XCUIApplication().debugDescription)
             recordFailure(
-                description: "Expected \(element) to exist.",
+                description: "Expected \(subject) \(element) to exist.",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -105,13 +110,14 @@ public extension XCTestCase {
     }
 
     func expect(
+        subject: String = "element",
         doesNotExist element: XCUIElement,
         file: String = #file,
         line: Int = #line
     ) {
         if element.exists {
             recordFailure(
-                description: "Expected \(element) to not exist.",
+                description: "Expected \(subject) \(element) to not exist.",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -120,6 +126,7 @@ public extension XCTestCase {
     }
 
     func expect(
+        subject: String = "elements",
         oneExists elements: [XCUIElement],
         file: String = #file,
         line: Int = #line
@@ -130,7 +137,7 @@ public extension XCTestCase {
         }
         print(XCUIApplication().debugDescription)
         recordFailure(
-            description: "Expected one of \(elements) to exist.",
+            description: "Expected one of \(subject) \(elements) to exist.",
             inFile: file,
             atLine: Int(line),
             type: .assertionFailure
@@ -138,13 +145,14 @@ public extension XCTestCase {
     }
 
     func expect(
+        subject: String = "this",
         false expression: @autoclosure () -> Bool?,
         file: String = #file,
         line: Int = #line
     ) {
         guard let actual = expression() else {
             recordFailure(
-                description: "Expected 'nil' to be false.",
+                description: "Expected \(subject) to be false, but it was `nil`.",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -153,7 +161,7 @@ public extension XCTestCase {
         }
         if actual != false {
             recordFailure(
-                description: "Expected this to be false.",
+                description: "Expected \(subject) to be false.",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -162,13 +170,14 @@ public extension XCTestCase {
     }
 
     func expect(
+        subject: String = "this",
         true expression: @autoclosure () -> Bool?,
         file: String = #file,
         line: Int = #line
     ) {
         guard let actual = expression() else {
             recordFailure(
-                description: "Expected 'nil' to be true.",
+                description: "Expected \(subject) to be true, but it was `nil`.",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -177,7 +186,7 @@ public extension XCTestCase {
         }
         if actual != true {
             recordFailure(
-                description: "Expected this to be true.",
+                description: "Expected \(subject) to be true.",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -186,6 +195,7 @@ public extension XCTestCase {
     }
 
     func expect<T: BinaryFloatingPoint>(
+        subject: String = "floating point",
         _ this: @autoclosure () -> T?,
         approximatelyEquals expression: @autoclosure () -> T?,
         within delta: T = 0.000_1,
@@ -196,7 +206,7 @@ public extension XCTestCase {
         let expected = expression()
 
         if !approximatelyEquals(actual, expected, within: delta) {
-            let desc = "Expected '\(String(describing: actual))' to equal '\(String(describing: expected)) within \(delta)"
+            let desc = "Expected \(subject) '\(String(describing: actual))' to equal '\(String(describing: expected)) within \(delta)"
             recordFailure(
                 description: desc,
                 inFile: file,
@@ -207,6 +217,7 @@ public extension XCTestCase {
     }
 
     func expect<T: BinaryFloatingPoint>(
+        subject: String = "floating point",
         _ this: @autoclosure () -> T?,
         doesNotApproximatelyEqual expression: @autoclosure () -> T?,
         within delta: T = 0.000_1,
@@ -216,7 +227,7 @@ public extension XCTestCase {
         let actual = this()
         let expected = expression()
         if approximatelyEquals(actual, expected, within: delta) {
-            let desc = "Expected '\(String(describing: actual))' not to equal '\(String(describing: expected)) within \(delta)"
+            let desc = "Expected \(subject) '\(String(describing: actual))' not to equal '\(String(describing: expected)) within \(delta)"
             recordFailure(
                 description: desc,
                 inFile: file,
@@ -241,6 +252,7 @@ public extension XCTestCase {
     }
 
     func expect(
+        subject: String = "string",
         _ this: @autoclosure () -> String,
         has expression: @autoclosure () -> StringHas,
         file: String = #file,
@@ -261,7 +273,7 @@ public extension XCTestCase {
         }
         if !success {
             recordFailure(
-                description: "Expected '\(actual)' to have \(part) '\(value)'",
+                description: "Expected \(subject) '\(actual)' to have \(part) '\(value)'",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -270,7 +282,7 @@ public extension XCTestCase {
     }
 
     func expect<T: Equatable>(
-        noun: String = "",
+        subject: String = "value",
         _ this: @autoclosure () -> T?,
         equals expression: @autoclosure () -> T?,
         file: String = #file,
@@ -279,7 +291,7 @@ public extension XCTestCase {
         let actual = this()
         let expected = expression()
         if !equals(actual, expected) {
-            let desc = "Expected \(noun) '\(actual.plainDescription)' to equal '\(expected.plainDescription)'"
+            let desc = "Expected \(subject) '\(actual.plainDescription)' to equal '\(expected.plainDescription)'"
             recordFailure(
                 description: desc,
                 inFile: file,
@@ -290,6 +302,7 @@ public extension XCTestCase {
     }
 
     func expect<T: Equatable>(
+        subject: String = "value",
         _ this: @autoclosure () -> T?,
         doesNotEqual expression: @autoclosure () -> T?,
         file: String = #file,
@@ -298,7 +311,7 @@ public extension XCTestCase {
         let actual = this()
         let expected = expression()
         if equals(actual, expected) {
-            let desc = "Expected '\(actual.plainDescription)' to not equal '\(expected.plainDescription)'"
+            let desc = "Expected \(subject) '\(actual.plainDescription)' to not equal '\(expected.plainDescription)'"
             recordFailure(
                 description: desc,
                 inFile: file,
@@ -309,7 +322,7 @@ public extension XCTestCase {
     }
 
     func expect<T: Comparable>(
-        noun: String = "",
+        subject: String = "value",
         _ this: @autoclosure () -> T?,
         lessThan expression: @autoclosure () -> T?,
         file: String = #file,
@@ -318,7 +331,7 @@ public extension XCTestCase {
         let actual = this()
         let expected = expression()
         if !lessThan(actual, expected) {
-            let desc = "Expected \(noun) '\(actual.plainDescription)' to be less than '\(expected.plainDescription)'"
+            let desc = "Expected \(subject) '\(actual.plainDescription)' to be less than '\(expected.plainDescription)'"
             recordFailure(
                 description: desc,
                 inFile: file,
@@ -329,7 +342,7 @@ public extension XCTestCase {
     }
 
     func expect<T: Comparable>(
-        noun: String = "",
+        subject: String = "value",
         _ this: @autoclosure () -> T?,
         lessThanOrEqualTo expression: @autoclosure () -> T?,
         file: String = #file,
@@ -338,7 +351,7 @@ public extension XCTestCase {
         let actual = this()
         let expected = expression()
         if !equals(actual, expected) && !lessThan(actual, expected) {
-            let desc = "Expected \(noun) '\(actual.plainDescription)' to be less than or equal to '\(expected.plainDescription)'"
+            let desc = "Expected \(subject) '\(actual.plainDescription)' to be less than or equal to '\(expected.plainDescription)'"
             recordFailure(
                 description: desc,
                 inFile: file,
@@ -349,7 +362,7 @@ public extension XCTestCase {
     }
 
     func expect<T: Comparable>(
-        noun: String = "",
+        subject: String = "value",
         _ this: @autoclosure () -> T?,
         greaterThan expression: @autoclosure () -> T?,
         file: String = #file,
@@ -358,7 +371,7 @@ public extension XCTestCase {
         let actual = this()
         let expected = expression()
         if !greaterThan(actual, expected) {
-            let desc = "Expected \(noun) '\(actual.plainDescription)' to be greater than '\(expected.plainDescription)'"
+            let desc = "Expected \(subject) '\(actual.plainDescription)' to be greater than '\(expected.plainDescription)'"
             recordFailure(
                 description: desc,
                 inFile: file,
@@ -369,7 +382,7 @@ public extension XCTestCase {
     }
 
     func expect<T: Comparable>(
-        noun: String = "",
+        subject: String = "value",
         _ this: @autoclosure () -> T?,
         greaterThanOrEqualTo expression: @autoclosure () -> T?,
         file: String = #file,
@@ -378,7 +391,7 @@ public extension XCTestCase {
         let actual = this()
         let expected = expression()
         if !equals(actual, expected) && !greaterThan(actual, expected) {
-            let desc = "Expected \(noun) '\(actual.plainDescription)' to be greater than or equal to '\(expected.plainDescription)'"
+            let desc = "Expected \(subject) '\(actual.plainDescription)' to be greater than or equal to '\(expected.plainDescription)'"
             recordFailure(
                 description: desc,
                 inFile: file,
@@ -387,8 +400,9 @@ public extension XCTestCase {
             )
         }
     }
-    
+
     func expect(
+        subject: String = "date",
         date thisDate: Date?,
         equals thatDate: Date?,
         downToThe component: Calendar.Component = .second,
@@ -406,7 +420,7 @@ public extension XCTestCase {
         }
         if !Calendar.current.isDate(thisDate, equalTo: thatDate, toGranularity: component) {
             recordFailure(
-                description: "Expected \(thisDate) to equal: \(thatDate)",
+                description: "Expected \(subject) \(thisDate) to equal: \(thatDate)",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -415,6 +429,7 @@ public extension XCTestCase {
     }
 
     func expect(
+        subject: String = "date",
         date thisDate: Date?,
         toBeWithin timeSpan: DateComponents,
         of thatDate: Date?,
@@ -433,7 +448,7 @@ public extension XCTestCase {
         }
         if !Calendar.current.isDate(thisDate, equalTo: thatDate, toGranularity: component) {
             recordFailure(
-                description: "Expected \(thisDate) to equal: \(thatDate)",
+                description: "Expected \(subject) \(thisDate) to equal: \(thatDate)",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -443,15 +458,25 @@ public extension XCTestCase {
 
     // MARK: - Contains
     func expect(
-        _ actual: String,
+        subject: String = "string",
+        _ this: @autoclosure () -> String?,
         contains expected: String...,
         file: String = #file,
         line: Int = #line
     ) {
+        guard let actual = this() else {
+            recordFailure(
+                description: "Expected \(subject) 'nil' to contain '\(expected)'",
+                inFile: file,
+                atLine: Int(line),
+                type: .assertionFailure
+            )
+            return
+        }
         let result = expected.map { actual.contains($0) }
         if let index = result.firstIndex(of: false) {
             recordFailure(
-                description: "Expected '\(actual)' to contain '\(expected[index])'",
+                description: "Expected \(subject) '\(actual)' to contain '\(expected[index])'",
                 inFile: file,
                 atLine: Int(line),
                 type: .assertionFailure
@@ -460,14 +485,24 @@ public extension XCTestCase {
     }
 
     func expect(
-        _ actual: String,
+        subject: String = "string",
+        _ this: @autoclosure () -> String?,
         doesNotContain expected: String...,
         file: String = #file,
         line: Int = #line
     ) {
+        guard let actual = this() else {
+            recordFailure(
+                description: "Expected \(subject) 'nil' to contain '\(expected)'",
+                inFile: file,
+                atLine: Int(line),
+                type: .assertionFailure
+            )
+            return
+        }
         let result = expected.map { actual.contains($0) }
         if let index = result.firstIndex(of: true) {
-            let desc = "Expected '\(actual)' to not contain '\(expected[index])'"
+            let desc = "Expected \(subject) '\(actual)' to not contain '\(expected[index])'"
             recordFailure(
                 description: desc,
                 inFile: file,

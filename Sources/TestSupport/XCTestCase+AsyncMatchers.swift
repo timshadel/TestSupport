@@ -1,4 +1,4 @@
-// Copyright © 2023 Tim Shadel. All rights reserved.
+// Copyright © 2024 Tim Shadel. All rights reserved.
 
 import Foundation
 import XCTest
@@ -22,6 +22,7 @@ public extension XCTestCase {
     }
 
     func expectEventually(
+        subject: String = "this",
         nil expression: @autoclosure @escaping () -> Any?,
         timeout: TimeInterval = XCTestCase.defaultTimeout,
         file: String = #file,
@@ -32,7 +33,7 @@ public extension XCTestCase {
         }
 
         wait(
-            for: "this",
+            for: subject,
             toEventually: "be nil",
             timeout: timeout,
             with: [expected],
@@ -42,6 +43,7 @@ public extension XCTestCase {
     }
 
     func expectEventually(
+        subject: String = "this",
         notNil expression: @autoclosure @escaping () -> Any?,
         timeout: TimeInterval = XCTestCase.defaultTimeout,
         file: String = #file,
@@ -52,7 +54,7 @@ public extension XCTestCase {
         }
 
         wait(
-            for: "this",
+            for: subject,
             toEventually: "not be nil",
             timeout: timeout,
             with: [expected],
@@ -62,6 +64,7 @@ public extension XCTestCase {
     }
 
     func expectEventually(
+        subject: String = "element",
         exists element: XCUIElement,
         timeout: TimeInterval = XCTestCase.defaultTimeout,
         file: String = #file,
@@ -72,7 +75,7 @@ public extension XCTestCase {
         }
 
         wait(
-            for: element.description,
+            for: "\(subject) \(element.description)",
             toEventually: "exist",
             timeout: timeout,
             with: [expected],
@@ -82,6 +85,7 @@ public extension XCTestCase {
     }
 
     func expectEventually(
+        subject: String = "",
         doesNotExist element: XCUIElement,
         timeout: TimeInterval = XCTestCase.defaultTimeout,
         file: String = #file,
@@ -92,7 +96,7 @@ public extension XCTestCase {
         }
 
         wait(
-            for: element.description,
+            for: "\(subject) \(element.description)",
             toEventually: "not exist",
             timeout: timeout,
             with: [expected],
@@ -102,6 +106,7 @@ public extension XCTestCase {
     }
 
     func expectEventually(
+        subject: String = "",
         hasContent element: XCUIElement,
         timeout: TimeInterval = XCTestCase.defaultTimeout,
         file: String = #file,
@@ -112,7 +117,7 @@ public extension XCTestCase {
         }
 
         wait(
-            for: element.description,
+            for: "\(subject) \(element.description)",
             toEventually: "have content",
             timeout: timeout,
             with: [expected],
@@ -122,6 +127,7 @@ public extension XCTestCase {
     }
 
     func expectEventually(
+        subject: String = "this",
         false expression: @autoclosure @escaping () -> Bool,
         timeout: TimeInterval = XCTestCase.defaultTimeout,
         file: String = #file,
@@ -132,7 +138,7 @@ public extension XCTestCase {
         }
 
         wait(
-            for: "this",
+            for: subject,
             toEventually: "be false",
             timeout: timeout,
             with: [expected],
@@ -142,6 +148,7 @@ public extension XCTestCase {
     }
 
     func expectEventually(
+        subject: String = "this",
         true expression: @autoclosure @escaping () -> Bool,
         timeout: TimeInterval = XCTestCase.defaultTimeout,
         file: String = #file,
@@ -152,7 +159,7 @@ public extension XCTestCase {
         }
 
         wait(
-            for: "this",
+            for: subject,
             toEventually: "be true",
             timeout: timeout,
             with: [expected],
@@ -189,6 +196,7 @@ public extension XCTestCase {
     }
 
     func expectEventually<T: Equatable>(
+        subject: String = "value",
         _ this: @autoclosure @escaping () -> T?,
         equals expression: @autoclosure @escaping () -> T,
         timeout: TimeInterval = XCTestCase.defaultTimeout,
@@ -207,7 +215,7 @@ public extension XCTestCase {
         }
 
         wait(
-            for: "'\(lastActual.plainDescription)'",
+            for: "\(subject) '\(lastActual.plainDescription)'",
             toEventually: "equal '\(lastExpected)'",
             timeout: timeout,
             with: [expected],

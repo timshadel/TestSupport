@@ -1,4 +1,4 @@
-//  Copyright © 2023 Tim Shadel. All rights reserved.
+// Copyright © 2024 Tim Shadel. All rights reserved.
 
 import Combine
 import Foundation
@@ -8,6 +8,7 @@ import XCTest
 public extension XCTestCase {
     @MainActor
     func expectOutputEventually<T: Publisher>(
+        subject: String = "publisher",
         publisher: T,
         timeout: TimeInterval = 10,
         file: StaticString = #file,
@@ -16,7 +17,7 @@ public extension XCTestCase {
         // This time, we use Swift's Result type to keep track
         // of the result of our Combine pipeline:
         var result: Result<T.Output, Error>?
-        let expectation = self.expectation(description: "Awaiting publisher")
+        let expectation = self.expectation(description: "Awaiting \(subject)")
 
         let cancellable = publisher.sink(
             receiveCompletion: { completion in
@@ -46,7 +47,7 @@ public extension XCTestCase {
         // any encountered errors at that original call site:
         let unwrappedResult = try XCTUnwrap(
             result,
-            "Awaited publisher did not produce any output",
+            "Awaited \(subject) did not produce any output",
             file: file,
             line: line
         )
